@@ -25,7 +25,7 @@ type FindingAidReader struct {
 
 func init() {
 
-     ctx := context.Background()
+	ctx := context.Background()
 
 	wof_reader.RegisterReader(ctx, "findingaid", NewFindingAidReader)
 }
