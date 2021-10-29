@@ -56,7 +56,12 @@ func main() {
 For example:
 
 ```
-$> ./bin/read -reader-uri 'findingaid://?dsn=/usr/local/data/findingaids/wof.db' 102527513 | jq '.["properties"]["wof:name"]'
+$> ./bin/read \
+	-reader-uri 'findingaid://?dsn=/usr/local/data/findingaids/wof.db' \
+	102527513 \
+	
+| jq '.["properties"]["wof:name"]'
+
 "San Francisco International Airport"
 ```
 
