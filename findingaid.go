@@ -13,9 +13,7 @@ import (
 	"net/url"
 )
 
-// https://raw.githubusercontent.com/whosonfirst-data/whosonfirst-data-admin-us/master/data/105/899/643/5/1058996435.geojson
-
-const WHOSONFIRST_DATA_TEMPLATE string = "https://raw.githubusercontent.com/whosonfirst-data/{repo}/master/data/{path}"
+const WHOSONFIRST_DATA_TEMPLATE string = "https://raw.githubusercontent.com/whosonfirst-data/{repo}/master/data/"
 
 type FindingAidReader struct {
 	wof_reader.Reader
@@ -102,6 +100,8 @@ func (r *FindingAidReader) getReaderAndPath(ctx context.Context, uri string) (wo
 
 func (r *FindingAidReader) getReaderURIAndPath(ctx context.Context, uri string) (string, string, error) {
 
+	// TBD: cache this?
+
 	id, uri_args, err := wof_uri.ParseURI(uri)
 
 	if err != nil {
@@ -121,7 +121,7 @@ func (r *FindingAidReader) getReaderURIAndPath(ctx context.Context, uri string) 
 	}
 
 	values := map[string]interface{}{
-		repo: repo,
+		"repo": repo,
 	}
 
 	reader_uri, err := r.template.Expand(values)
