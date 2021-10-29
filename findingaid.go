@@ -23,6 +23,13 @@ type FindingAidReader struct {
 	template *uritemplates.UriTemplate
 }
 
+func init() {
+
+     ctx := context.Background()
+
+	wof_reader.RegisterReader(ctx, "findingaid", NewFindingAidReader)
+}
+
 func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, error) {
 
 	u, err := url.Parse(uri)
