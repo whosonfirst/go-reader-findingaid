@@ -99,6 +99,28 @@ findingaid://?dsn=/usr/local/data/findingaids/wof.db
 
 Note: Although it is possible to produce Who's On First finding aids that are not SQLite database this package _only_ works with SQLite-based finding aids.
 
+## How does it work?
+
+First, given a URI (for example `174/616/026/9/1746160269.geojson` or `1746160269.geojson` or `1746160269`) that URI is resolved to its Who's On First ID: `1746160269`
+
+Second, the repository name associated with that ID (for example `sfomuseum-data-maps`) is retrieved from the finding aid database you specified in the reader's constructor.
+
+Third, the Who's On First ID derived in step (1) is then expanded in to it nested relative URL (for example `174/616/026/9/1746160269.geojson`).
+
+Fourth, the repository name derived in step (2) is used to expand a URI template used to create a new internal `go-reader.Reader` instance. The default URI template points the `https://github.com/whosonfirst-data` repositories but you can define your own. For example:
+
+```
+findingaid_uri := "findingaid://?dsn=fa.db&template=https://raw.githubusercontent.com/sfomuseum-data/{repo}/main/data/"
+
+ctx := context.Background()
+r, _ := reader.NewReader(ctx, findingaid_uri)
+r.Read(ctx, 1746160269)
+```
+
+In the example the final document would be read from https://raw.githubusercontent.com/sfomuseum-data/sfomuseum-data-maps/main/data/174/616/026/9/1746160269.geojson.
+
+This means that URI template can define a constructor for [any go-reader.Reader implementation](https://github.com/whosonfirst/go-reader#custom-readers) so long as you've imported that package in your code.
+
 ## Tools
 
 ```
