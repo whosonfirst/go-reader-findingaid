@@ -4,13 +4,13 @@ Go package implementing the whosonfirst/go-reader interface for use with Who's O
 
 ## Important
 
-This is work in progress and targets "version 2" of the `whosonfirst/go-whosonfirst-findingaid` package which is also not finalized yet:
+This package targets "version 2" of the `whosonfirst/go-whosonfirst-findingaid` package which is not finalized yet:
 
 https://github.com/whosonfirst/go-whosonfirst-findingaid/tree/v2
 
 ## Documentation
 
-Documentation is incomplete at this time.
+[![Go Reference](https://pkg.go.dev/badge/github.com/whosonfirst/go-reader-findingaid.svg)](https://pkg.go.dev/github.com/whosonfirst/go-reader-findingaid)
 
 ## Example
 
@@ -30,7 +30,7 @@ import (
 
 func main() {
 
-	reader_uri := flag.String("reader-uri", "", "A valid whosonfirst/go-reader URI.")
+	reader_uri := flag.String("reader-uri", "", "A valid whosonfirst/go-reader-findingaid URI.")
 
 	flag.Parse()
 
@@ -46,12 +46,54 @@ func main() {
 		io.Copy(os.Stdout, fh)
 	}
 }
+```
 
+For a complete working example see [cmd/read](cmd/read/main.go).
+
+## Finding aids
+
+TBW
+
+## Finding aid URIs
+
+Finding aid URIs take the form of:
+
+```
+findingaid://?{QUERY_PARAMETERS}
+```
+
+Valid finding aid query parameters are:
+
+| Name | Type | Notes | Required
+| --- | --- | --- | --- |
+| dsn | string | A valid `matt/go-sqlite3` DSN string | yes |
+| template | string | A valid `jtacoma/uritemplates` for resolving final reader URIs. If empty the default URI template mapping to `whosonfirst-data/whosonfirst-data` repositories will be used. | no |
+
+For example:
+
+```
+findingaid://?dsn=/usr/local/data/findingaids/wof.db
 ```
 
 ## Tools
 
+```
+$> make cli
+go build -mod vendor -o bin/read cmd/read/main.go
+```
+
 ### read
+
+Resolve one or more URIs, using a Who's On First finding aid and read their corresponding Who's On First documents, outputting each to `STDOUT`.
+
+```
+> ./bin/read -h
+Resolve one or more URIs, using a Who's On First finding aid and read their corresponding Who's On First documents, outputting each to STDOUT.
+Usage:
+	 ./bin/read uri(N) uri(N)
+  -reader-uri string
+    	A valid whosonfirst/go-reader-findingaid URI
+```
 
 For example:
 

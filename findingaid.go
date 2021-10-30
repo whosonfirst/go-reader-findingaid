@@ -13,21 +13,25 @@ import (
 	"net/url"
 )
 
+// WHOSONFIRST_DATA_TEMPLATE is a URL template for the root `data` directory in Who's On First data repositories.
 const WHOSONFIRST_DATA_TEMPLATE string = "https://raw.githubusercontent.com/whosonfirst-data/{repo}/master/data/"
 
+// type FindingAidReader implements the `whosonfirst/go-reader` interface for use with Who's On First finding aids.
 type FindingAidReader struct {
 	wof_reader.Reader
-	db       *sql.DB
+	// A SQLite `sql.DB` instance containing Who's On First finding aid data.
+	db *sql.DB
+	// A compiled `uritemplates.UriTemplate` to use resolving Who's On First finding aid URIs.
 	template *uritemplates.UriTemplate
 }
 
 func init() {
-
 	ctx := context.Background()
-
 	wof_reader.RegisterReader(ctx, "findingaid", NewFindingAidReader)
 }
 
+// NewFindingAidReader will return a new `whosonfirst/go-reader.Reader` instance for reading Who's On First
+// documents by first resolving a URL using a Who's On First finding aid.
 func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, error) {
 
 	u, err := url.Parse(uri)
@@ -66,6 +70,7 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 	return f, nil
 }
 
+// Read returns an `io.ReadSeekCloser` instance for the document resolved by `uri`.
 func (r *FindingAidReader) Read(ctx context.Context, uri string) (io.ReadSeekCloser, error) {
 
 	new_r, rel_path, err := r.getReaderAndPath(ctx, uri)
@@ -77,10 +82,13 @@ func (r *FindingAidReader) Read(ctx context.Context, uri string) (io.ReadSeekClo
 	return new_r.Read(ctx, rel_path)
 }
 
+// ReaderURI returns final URI resolved by `uri` for this reader.
 func (r *FindingAidReader) ReaderURI(ctx context.Context, uri string) string {
 	return uri
 }
 
+// getReaderAndPath returns a new `whosonfirst/go-reader.Reader` instance, and the relative path,
+// to use for reading documents resolved by `uri`.
 func (r *FindingAidReader) getReaderAndPath(ctx context.Context, uri string) (wof_reader.Reader, string, error) {
 
 	reader_uri, rel_path, err := r.getReaderURIAndPath(ctx, uri)
@@ -98,6 +106,8 @@ func (r *FindingAidReader) getReaderAndPath(ctx context.Context, uri string) (wo
 	return new_r, rel_path, nil
 }
 
+// getReaderAndPath returns a new `whosonfirst/go-reader.Reader` URI, and the relative path,
+// to use for reading documents resolved by `uri`.
 func (r *FindingAidReader) getReaderURIAndPath(ctx context.Context, uri string) (string, string, error) {
 
 	// TBD: cache this?
@@ -133,6 +143,8 @@ func (r *FindingAidReader) getReaderURIAndPath(ctx context.Context, uri string) 
 	return reader_uri, rel_path, nil
 }
 
+// getRepo returns the name of the repository associated with this ID in a Who's On First finding
+// aid.
 func (r *FindingAidReader) getRepo(ctx context.Context, id int64) (string, error) {
 
 	var repo string
