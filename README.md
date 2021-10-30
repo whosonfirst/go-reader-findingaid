@@ -52,7 +52,29 @@ For a complete working example see [cmd/read](cmd/read/main.go).
 
 ## Finding aids
 
-TBW
+A Who's On First finding aid is meant to map a given ID to its corresponding `whosonfirst-data/whosonfirst-data` repository (although other sources are possible through the use of URI templates described below).
+
+One use case for finding aids is something like the [go-whosonfirst-browser](https://github.com/whosonfirst/go-whosonfirst-browser) which doesn't have a database of IDs but instead uses one or more [go-reader](https://github.com/whosonfirst/go-reader) instances to retrieve records. That is: The `go-whosonfirst-browser` doesn't actually know anything about _where_ the data is coming from. It lets the "reader" handle all those details.
+
+One goal with the finding aids has been to create a "finding aid reader" that when given an ID would look up its corresponding repository and fetch the data over the wire from GitHub. That way the `go-whosonfirst-browser` could run with a minimal footprint (read: No database with a bazillion WOF records).
+
+The finding aid model has two "tables". One is to store the WOF ID lookup and looks like this:
+
+```
+whosonfirst_id, repo_id
+```
+
+And one to store the repo ID and it's corresponding name:
+
+```
+repo_name, repo_id
+```
+
+The idea being that storing string repo names for every record is a waste of space and processing time. Although it may probably be the case that any given finding aids will map to a single WOF repo it is possible for a finding aid to contain pointers to records from multiple repositories.
+
+This package _does not produce Who's On First finding aids_, it only consumes them. For information and tools to produce finding aids please consult:
+
+* https://github.com/whosonfirst/go-whosonfirst-findingaid/tree/v2
 
 ## Finding aid URIs
 
@@ -74,6 +96,8 @@ For example:
 ```
 findingaid://?dsn=/usr/local/data/findingaids/wof.db
 ```
+
+Note: Although it is possible to produce Who's On First finding aids that are not SQLite database this package _only_ works with SQLite-based finding aids.
 
 ## Tools
 
