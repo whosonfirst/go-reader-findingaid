@@ -1,13 +1,16 @@
 package findingaid
 
 import (
+	_ "github.com/whosonfirst/go-reader-http"
+)
+
+import (
 	"context"
 	"database/sql"
 	"fmt"
 	"github.com/jtacoma/uritemplates"
-	_ "github.com/mattn/go-sqlite3"
 	wof_reader "github.com/whosonfirst/go-reader"
-	_ "github.com/whosonfirst/go-reader-http"
+	"github.com/whosonfirst/go-reader-findingaid/finder"
 	wof_uri "github.com/whosonfirst/go-whosonfirst-uri"
 	"io"
 	"net/url"
@@ -23,6 +26,7 @@ type FindingAidReader struct {
 	db *sql.DB
 	// A compiled `uritemplates.UriTemplate` to use resolving Who's On First finding aid URIs.
 	template *uritemplates.UriTemplate
+	finder   finder.Finder
 }
 
 func init() {
@@ -44,10 +48,10 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 
 	dsn := q.Get("dsn")
 
-	db, err := sql.Open("sqlite3", dsn)
+	f, err := finder.NewFinder(ctx, uri)
 
 	if err != nil {
-		return nil, fmt.Errorf("Failed to open database, %w", err)
+		return nil, fmt.Errorf("Failed to create finder, %w", err)
 	}
 
 	uri_template := WHOSONFIRST_DATA_TEMPLATE
@@ -63,7 +67,7 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 	}
 
 	f := &FindingAidReader{
-		db:       db,
+		finder:   finder,
 		template: t,
 	}
 
@@ -118,7 +122,7 @@ func (r *FindingAidReader) getReaderURIAndPath(ctx context.Context, uri string) 
 		return "", "", fmt.Errorf("Failed to parse URI, %w", err)
 	}
 
-	repo, err := r.getRepo(ctx, id)
+	repo, err := r.finder.GetRepo(ctx, id)
 
 	if err != nil {
 		return "", "", fmt.Errorf("Failed to derive repo, %w", err)
@@ -141,22 +145,4 @@ func (r *FindingAidReader) getReaderURIAndPath(ctx context.Context, uri string) 
 	}
 
 	return reader_uri, rel_path, nil
-}
-
-// getRepo returns the name of the repository associated with this ID in a Who's On First finding
-// aid.
-func (r *FindingAidReader) getRepo(ctx context.Context, id int64) (string, error) {
-
-	var repo string
-
-	q := "SELECT s.name FROM catalog c, sources s WHERE c.id = ? AND c.repo_id = s.id"
-
-	row := r.db.QueryRowContext(ctx, q, id)
-	err := row.Scan(&repo)
-
-	if err != nil {
-		return "", fmt.Errorf("Failed to scan row, %w", err)
-	}
-
-	return repo, nil
 }
