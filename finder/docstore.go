@@ -1,5 +1,11 @@
 package finder
 
+/*
+
+> go run -mod vendor cmd/read/main.go -reader-uri 'findingaid://awsdynamodb/findingaid?region=us-west-2&endpoint=http://localhost:8000&credentials=static:local:local:local&partition_key=id' 1360391327
+
+*/
+
 import (
 	"context"
 	"fmt"
@@ -7,6 +13,7 @@ import (
 	"gocloud.dev/docstore"
 	gc_dynamodb "gocloud.dev/docstore/awsdynamodb"
 	"net/url"
+	"strings"
 )
 
 // type DocstoreFinder implements the `whosonfirst/go-reader` interface for use with Who's On First finding aids.
@@ -59,7 +66,9 @@ func NewDocstoreFinder(ctx context.Context, uri string) (Finder, error) {
 		}
 
 		u, _ := url.Parse(uri)
-		table_name := u.Host
+		table_name := u.Path
+
+		table_name = strings.TrimLeft(table_name, "/")
 
 		q := u.Query()
 
