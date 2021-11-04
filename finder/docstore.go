@@ -3,7 +3,9 @@ package finder
 import (
 	"context"
 	"fmt"
+	"github.com/aaronland/go-aws-dynamodb"
 	"gocloud.dev/docstore"
+	gc_dynamodb "gocloud.dev/docstore/awsdynamodb"
 	"net/url"
 )
 
@@ -34,13 +36,77 @@ func init() {
 // documents by first resolving a URL using a Who's On First finding aid.
 func NewDocstoreFinder(ctx context.Context, uri string) (Finder, error) {
 
-	_, err := url.Parse(uri)
+	u, err := url.Parse(uri)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to parse URL, %w", err)
 	}
 
-	collection, err := docstore.OpenCollection(ctx, uri)
+	// START OF put me in a package function or something
+
+	var collection *docstore.Collection
+
+	if u.Scheme == "awsdynamodb" {
+
+		// Connect local dynamodb using Golang
+		// https://gist.github.com/Tamal/02776c3e2db7eec73c001225ff52e827
+		// https://gocloud.dev/howto/docstore/#dynamodb-ctor
+
+		client, err := dynamodb.NewClientWithURI(ctx, uri)
+
+		if err != nil {
+			return nil, fmt.Errorf("Failed to create client, %v", err)
+		}
+
+		u, _ := url.Parse(uri)
+		table_name := u.Host
+
+		q := u.Query()
+
+		partition_key := q.Get("partition_key")
+
+		/*
+
+			// START OF necessary for order by created/lastupdate dates
+			// https://pkg.go.dev/gocloud.dev@v0.23.0/docstore/awsdynamodb#InMemorySortFallback
+
+			create_func := func() interface{} {
+				return new(map[string]interface{})
+			}
+
+			fallback_func := aws_dynamodb.InMemorySortFallback(create_func)
+
+			opts := &aws_dynamodb.Options{
+				AllowScans:       true,
+				RunQueryFallback: fallback_func,
+			}
+
+			// END OF necessary for order by created/lastupdate dates
+
+			col, err := gc_dynamodb.OpenCollection(dynamodb.New(sess), table, partition_key, "", opts)
+
+		*/
+
+		col, err := gc_dynamodb.OpenCollection(client, table_name, partition_key, "", nil)
+
+		if err != nil {
+			return nil, fmt.Errorf("Failed to open collection, %w", err)
+		}
+
+		collection = col
+
+	} else {
+
+		col, err := docstore.OpenCollection(ctx, uri)
+
+		if err != nil {
+			return nil, fmt.Errorf("Failed to create database for '%s', %w", uri, err)
+		}
+
+		collection = col
+	}
+
+	// END OF put me in a package function or something
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to open collection, %w", err)
