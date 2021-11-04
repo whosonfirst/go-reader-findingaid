@@ -2,7 +2,17 @@ package finder
 
 /*
 
-> go run -mod vendor cmd/read/main.go -reader-uri 'findingaid://awsdynamodb/findingaid?region=us-west-2&endpoint=http://localhost:8000&credentials=static:local:local:local&partition_key=id' 1360391327
+$> cd /usr/local/data/dynamodb
+$> java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
+
+$> cd /usr/local/whosonfirst/go-whosonfirst-findingaid
+$> go run -mod vendor cmd/create-dynamodb-tables/main.go -dynamodb-uri 'awsdynamodb://findingaid?region=us-west-2&endpoint=http://localhost:8000&credentials=static:local:local:local' -refresh
+$> make cli && ./bin/populate -producer-uri 'awsdynamodb://findingaid?region=us-west-2&endpoint=http://localhost:8000&credentials=static:local:local:local&partition_key=id' /usr/local/data/sfomuseum-data-maps/
+
+$> cd /usr/local/whosonfirst/go-reader-findingaid
+$> make cli && ./bin/read -reader-uri 'findingaid://awsdynamodb/findingaid?region=us-west-2&endpoint=http://localhost:8000&credentials=static:local:local:local&partition_key=id&template=https://raw.githubusercontent.com/sfomuseum-data/{repo}/main/data/' 1360391327 | jq '.["properties"]["wof:name"]'
+
+"SFO (1988)"
 
 */
 
@@ -12,7 +22,7 @@ import (
 	"github.com/aaronland/go-aws-dynamodb"
 	"gocloud.dev/docstore"
 	gc_dynamodb "gocloud.dev/docstore/awsdynamodb"
-	"log"
+	_ "log"
 	"net/url"
 	"strings"
 )
@@ -133,6 +143,8 @@ func NewDocstoreFinder(ctx context.Context, uri string) (Finder, error) {
 // aid.
 func (r *DocstoreFinder) GetRepo(ctx context.Context, id int64) (string, error) {
 
+	// TBD: Import whosonfirst/go-whosonfirst-findingaid/producer/docstore CatalogRecord?
+
 	doc := map[string]interface{}{
 		"id":        id,
 		"repo_name": "",
@@ -145,6 +157,5 @@ func (r *DocstoreFinder) GetRepo(ctx context.Context, id int64) (string, error) 
 	}
 
 	repo := doc["repo_name"].(string)
-
 	return repo, nil
 }
