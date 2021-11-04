@@ -3,7 +3,6 @@ package finder
 import (
 	"context"
 	"fmt"
-	wof_reader "github.com/whosonfirst/go-reader"
 	"gocloud.dev/docstore"
 	"net/url"
 )
@@ -19,11 +18,11 @@ func init() {
 
 	ctx := context.Background()
 
-	wof_reader.RegisterReader(ctx, "awsdynamodb", NewDocstoreFinder)
+	RegisterFinder(ctx, "awsdynamodb", NewDocstoreFinder)
 
 	for _, scheme := range docstore.DefaultURLMux().CollectionSchemes() {
 
-		err := wof_reader.RegisterReader(ctx, scheme, NewDocstoreFinder)
+		err := RegisterFinder(ctx, scheme, NewDocstoreFinder)
 
 		if err != nil {
 			panic(err)
@@ -35,7 +34,7 @@ func init() {
 // documents by first resolving a URL using a Who's On First finding aid.
 func NewDocstoreFinder(ctx context.Context, uri string) (Finder, error) {
 
-	u, err := url.Parse(uri)
+	_, err := url.Parse(uri)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to parse URL, %w", err)

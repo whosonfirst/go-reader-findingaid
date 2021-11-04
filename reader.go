@@ -44,15 +44,20 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 		return nil, fmt.Errorf("Failed to parse URL, %w", err)
 	}
 
-	q := u.Query()
+	fu := url.URL{}
+	fu.Scheme = u.Host
+	fu.Path = u.Path
+	fu.RawQuery = u.RawQuery
 
-	dsn := q.Get("dsn")
+	f_uri := fu.String()
 
-	f, err := finder.NewFinder(ctx, uri)
+	f, err := finder.NewFinder(ctx, f_uri)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to create finder, %w", err)
 	}
+
+	q := u.Query()
 
 	uri_template := WHOSONFIRST_DATA_TEMPLATE
 
@@ -66,12 +71,12 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 		return nil, fmt.Errorf("Failed to parse URI template, %w", err)
 	}
 
-	f := &FindingAidReader{
-		finder:   finder,
+	r := &FindingAidReader{
+		finder:   f,
 		template: t,
 	}
 
-	return f, nil
+	return r, nil
 }
 
 // Read returns an `io.ReadSeekCloser` instance for the document resolved by `uri`.

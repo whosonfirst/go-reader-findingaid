@@ -5,8 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
-	wof_reader "github.com/whosonfirst/go-reader"
-	_ "github.com/whosonfirst/go-reader-http"
 	"net/url"
 )
 
@@ -22,8 +20,8 @@ type SQLiteFinder struct {
 
 func init() {
 	ctx := context.Background()
-	wof_reader.RegisterReader(ctx, "sqlite", NewSQLiteFinder)
-	wof_reader.RegisterReader(ctx, "sqlite3", NewSQLiteFinder)
+	RegisterFinder(ctx, "sqlite", NewSQLiteFinder)
+	RegisterFinder(ctx, "sqlite3", NewSQLiteFinder)
 }
 
 // NewSQLiteFinder will return a new `whosonfirst/go-reader.` instance for reading Who's On First
