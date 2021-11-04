@@ -12,6 +12,7 @@ import (
 	"github.com/aaronland/go-aws-dynamodb"
 	"gocloud.dev/docstore"
 	gc_dynamodb "gocloud.dev/docstore/awsdynamodb"
+	"log"
 	"net/url"
 	"strings"
 )
@@ -132,7 +133,18 @@ func NewDocstoreFinder(ctx context.Context, uri string) (Finder, error) {
 // aid.
 func (r *DocstoreFinder) GetRepo(ctx context.Context, id int64) (string, error) {
 
-	var repo string
+	doc := map[string]interface{}{
+		"id":        id,
+		"repo_name": "",
+	}
+
+	err := r.collection.Get(ctx, doc)
+
+	if err != nil {
+		return "", fmt.Errorf("Failed to get record for %d, %w", id, err)
+	}
+
+	repo := doc["repo_name"].(string)
 
 	return repo, nil
 }
