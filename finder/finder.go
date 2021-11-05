@@ -1,3 +1,4 @@
+// package finder providers common methods and interfaces for retrieving repository data from a variety of storage systems.
 package finder
 
 import (
@@ -9,10 +10,13 @@ import (
 	"strings"
 )
 
+// type Finder defines a storage-independent interface for retrieving a repository name given an ID.
 type Finder interface {
+	// GetRepo returns the repository name matching an ID.
 	GetRepo(context.Context, int64) (string, error)
 }
 
+// type FinderInitializeFunc defines an initialization function for a storage-specific implementation of the Finder interface.
 type FinderInitializeFunc func(ctx context.Context, uri string) (Finder, error)
 
 var finders roster.Roster

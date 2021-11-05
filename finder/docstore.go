@@ -27,7 +27,7 @@ import (
 	"strings"
 )
 
-// type DocstoreFinder implements the `whosonfirst/go-reader` interface for use with Who's On First finding aids.
+// type DocstoreFinder implements the `Finder` interface for data stored in a gocloud.dev/docstore compatible collection.
 type DocstoreFinder struct {
 	Finder
 	// A Docstore `sql.DB` instance containing Who's On First finding aid data.
@@ -50,8 +50,8 @@ func init() {
 	}
 }
 
-// NewDocstoreFinder will return a new `whosonfirst/go-reader.` instance for reading Who's On First
-// documents by first resolving a URL using a Who's On First finding aid.
+// NewDocstoreFinder will return a new `Finder` instance for resolving repository names
+// and IDs stored in a gocloud.dev/docstore Collection.
 func NewDocstoreFinder(ctx context.Context, uri string) (Finder, error) {
 
 	u, err := url.Parse(uri)
@@ -85,28 +85,6 @@ func NewDocstoreFinder(ctx context.Context, uri string) (Finder, error) {
 
 		partition_key := q.Get("partition_key")
 
-		/*
-
-			// START OF necessary for order by created/lastupdate dates
-			// https://pkg.go.dev/gocloud.dev@v0.23.0/docstore/awsdynamodb#InMemorySortFallback
-
-			create_func := func() interface{} {
-				return new(map[string]interface{})
-			}
-
-			fallback_func := aws_dynamodb.InMemorySortFallback(create_func)
-
-			opts := &aws_dynamodb.Options{
-				AllowScans:       true,
-				RunQueryFallback: fallback_func,
-			}
-
-			// END OF necessary for order by created/lastupdate dates
-
-			col, err := gc_dynamodb.OpenCollection(dynamodb.New(sess), table, partition_key, "", opts)
-
-		*/
-
 		col, err := gc_dynamodb.OpenCollection(client, table_name, partition_key, "", nil)
 
 		if err != nil {
@@ -139,8 +117,7 @@ func NewDocstoreFinder(ctx context.Context, uri string) (Finder, error) {
 	return f, nil
 }
 
-// getRepo returns the name of the repository associated with this ID in a Who's On First finding
-// aid.
+// GetRepo returns the name of the repository associated with this ID in a Who's On First finding aid.
 func (r *DocstoreFinder) GetRepo(ctx context.Context, id int64) (string, error) {
 
 	// TBD: Import whosonfirst/go-whosonfirst-findingaid/producer/docstore CatalogRecord?

@@ -8,10 +8,7 @@ import (
 	"net/url"
 )
 
-// WHOSONFIRST_DATA_TEMPLATE is a URL template for the root `data` directory in Who's On First data repositories.
-const WHOSONFIRST_DATA_TEMPLATE string = "https://raw.githubusercontent.com/whosonfirst-data/{repo}/master/data/"
-
-// type SQLiteFinder implements the `whosonfirst/go-reader` interface for use with Who's On First finding aids.
+// type SQLiteFinder implements the `Finder` interface for data stored in a SQLite database..
 type SQLiteFinder struct {
 	Finder
 	// A SQLite `sql.DB` instance containing Who's On First finding aid data.
@@ -24,8 +21,8 @@ func init() {
 	RegisterFinder(ctx, "sqlite3", NewSQLiteFinder)
 }
 
-// NewSQLiteFinder will return a new `whosonfirst/go-reader.` instance for reading Who's On First
-// documents by first resolving a URL using a Who's On First finding aid.
+// NewSQLiteFinder will return a new `Finder` instance for resolving repository names
+// and IDs stored in a SQLite database.
 func NewSQLiteFinder(ctx context.Context, uri string) (Finder, error) {
 
 	u, err := url.Parse(uri)
@@ -51,8 +48,7 @@ func NewSQLiteFinder(ctx context.Context, uri string) (Finder, error) {
 	return f, nil
 }
 
-// GetRepo returns the name of the repository associated with this ID in a Who's On First finding
-// aid.
+// GetRepo returns the name of the repository associated with this ID in a Who's On First finding aid.
 func (r *SQLiteFinder) GetRepo(ctx context.Context, id int64) (string, error) {
 
 	var repo string
