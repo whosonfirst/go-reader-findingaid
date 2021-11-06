@@ -66,7 +66,7 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 
 	// findingaid://sql?dsn={DSN}
 	// findingaid://awsdynamo/{TABLENAME}
-	// findingaid://resolver?endpoint{ENDPOINT}
+	// findingaid://http(s)/{HOST}/{PATH}
 
 	// Set up resolver
 

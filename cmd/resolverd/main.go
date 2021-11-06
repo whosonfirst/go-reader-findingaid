@@ -1,8 +1,10 @@
+// resolverd provides an HTTP server endpoint for resolving Who's On First URIs to their corresponding repository name
+// using a go-reader-findingaid/resolver.Resolver instance.
 package main
 
 /*
 
-> go run -mod vendor cmd/server/main.go -resolver-uri 'awsdynamodb:///findingaid?region=local&endpoint=http://localhost:8000&credentials=static:local:local:local&partition_key=id'
+> go run -mod vendor cmd/resolver/main.go -resolver-uri 'awsdynamodb:///findingaid?region=local&endpoint=http://localhost:8000&credentials=static:local:local:local&partition_key=id'
 
 > curl http://localhost:8080/1678780019
 sfomuseum-data-flights-2018

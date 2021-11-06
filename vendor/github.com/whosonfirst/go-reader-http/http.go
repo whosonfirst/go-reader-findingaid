@@ -6,7 +6,7 @@ import (
 	wof_reader "github.com/whosonfirst/go-reader"
 	"github.com/whosonfirst/go-ioutil"
 	"io"
-	_ "log"
+	"log"
 	"net/http"
 	"net/url"
 	"path/filepath"
@@ -66,9 +66,11 @@ func (r *HTTPReader) Read(ctx context.Context, uri string) (io.ReadSeekCloser, e
 
 	url := u.String()
 
+	log.Println("GET", url)
 	rsp, err := http.Get(url)
 
 	if err != nil {
+		log.Println("ERR", err)
 		return nil, err
 	}
 
