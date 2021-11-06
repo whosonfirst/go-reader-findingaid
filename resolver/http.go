@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	_ "log"
 	"net/http"
 	"net/url"
 	"strconv"
