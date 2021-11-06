@@ -44,14 +44,20 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 		return nil, fmt.Errorf("Failed to parse URL, %w", err)
 	}
 
-	fu := url.URL{}
-	fu.Scheme = u.Host
-	fu.Path = u.Path
-	fu.RawQuery = u.RawQuery
+	// findingaid://sql?dsn=...
+	// findingaid://awsdynamo/...
+	// findingaid://http
 
-	f_uri := fu.String()
+	// Set up resolver
 
-	f, err := resolver.NewResolver(ctx, f_uri)
+	ru := url.URL{}
+	ru.Scheme = u.Host
+	ru.Path = u.Path
+	ru.RawQuery = u.RawQuery
+
+	r_uri := fu.String()
+
+	f, err := resolver.NewResolver(ctx, r_uri)
 
 	if err != nil {
 		return nil, fmt.Errorf("Failed to create resolver, %w", err)
