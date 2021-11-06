@@ -26,7 +26,7 @@ type FindingAidReader struct {
 	db *sql.DB
 	// A compiled `uritemplates.UriTemplate` to use resolving Who's On First finding aid URIs.
 	template *uritemplates.UriTemplate
-	resolver   resolver.Resolver
+	resolver resolver.Resolver
 }
 
 func init() {
@@ -72,7 +72,7 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 	}
 
 	r := &FindingAidReader{
-		resolver:   f,
+		resolver: f,
 		template: t,
 	}
 
