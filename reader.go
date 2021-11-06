@@ -13,7 +13,7 @@ import (
 	"github.com/whosonfirst/go-reader-findingaid/resolver"
 	wof_uri "github.com/whosonfirst/go-whosonfirst-uri"
 	"io"
-	"log"
+	_ "log"
 	"net/url"
 	"strings"
 )
@@ -124,7 +124,6 @@ func (r *FindingAidReader) Read(ctx context.Context, uri string) (io.ReadSeekClo
 		return nil, fmt.Errorf("Failed to derive reader and path, %w", err)
 	}
 
-	log.Println("READ", rel_path)
 	fh, err := new_r.Read(ctx, rel_path)
 
 	if err != nil {
@@ -148,8 +147,6 @@ func (r *FindingAidReader) getReaderAndPath(ctx context.Context, uri string) (wo
 	if err != nil {
 		return nil, "", fmt.Errorf("Failed to derive reader URI and path, %w", err)
 	}
-
-	log.Println("NEW", reader_uri)
 
 	new_r, err := wof_reader.NewReader(ctx, reader_uri)
 

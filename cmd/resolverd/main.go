@@ -4,10 +4,16 @@ package main
 
 /*
 
-> go run -mod vendor cmd/resolver/main.go -resolver-uri 'awsdynamodb:///findingaid?region=local&endpoint=http://localhost:8000&credentials=static:local:local:local&partition_key=id'
+$> java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
 
-> curl http://localhost:8080/1678780019
+$> ./bin/resolverd -resolver-uri 'awsdynamodb:///findingaid?region=local&endpoint=http://localhost:8000&credentials=static:local:local:local&partition_key=id'
+2021/11/06 16:37:48 Listening for requests on http://localhost:8080
+
+$> curl http://localhost:8080/1678780019
 sfomuseum-data-flights-2018
+
+$> ./bin/read -reader-uri 'findingaid://http/localhost:8080?template=https://raw.githubusercontent.com/sfomuseum-data/{repo}/main/data/' 85922583 | jq '.["properties"]["wof:name"]'
+"San Francisco"
 
 */
 
