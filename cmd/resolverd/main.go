@@ -66,6 +66,12 @@ func main() {
 
 	flagset.Parse(fs)
 
+	err := flagset.SetFlagsFromEnvVars(fs, "RESOLVERD")
+
+	if err != nil {
+		log.Fatalf("Failed to set flags from environment variables, %v", err)
+	}
+
 	ctx := context.Background()
 
 	r, err := resolver.NewResolver(ctx, *resolver_uri)
