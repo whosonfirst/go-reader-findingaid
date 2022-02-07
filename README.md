@@ -4,9 +4,9 @@ Go package implementing the whosonfirst/go-reader interface for use with Who's O
 
 ## Important
 
-This package targets "version 2" of the `whosonfirst/go-whosonfirst-findingaid` package which is not finalized yet:
+This package targets "version 2" of the `whosonfirst/go-whosonfirst-findingaid` package:
 
-https://github.com/whosonfirst/go-whosonfirst-findingaid/tree/v2
+https://github.com/whosonfirst/go-whosonfirst-findingaid/
 
 ## Documentation
 
@@ -178,4 +178,4 @@ $> ./bin/read -reader-uri 'findingaid://http/localhost:8080?template=https://raw
 
 * https://github.com/whosonfirst/go-whosonfirst-reader
 * https://github.com/whosonfirst/go-whosonfirst-reader-http
-* https://github.com/whosonfirst/go-whosonfirst-findingaid/tree/v2
+* https://github.com/whosonfirst/go-whosonfirst-findingaid
