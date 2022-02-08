@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"github.com/jtacoma/uritemplates"
 	wof_reader "github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-reader-findingaid/resolver"
+	"github.com/whosonfirst/go-whosonfirst-findingaid/v2/resolver"
 	wof_uri "github.com/whosonfirst/go-whosonfirst-uri"
 	"io"
 	_ "log"
@@ -64,7 +64,7 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 	q.Del("template")
 	u.RawQuery = q.Encode()
 
-	// findingaid://sql?dsn={DSN}
+	// findingaid://sqlite?dsn={DSN}
 	// findingaid://awsdynamo/{TABLENAME}
 	// findingaid://http(s)/{HOST}/{PATH}
 

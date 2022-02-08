@@ -20,7 +20,7 @@ func TestFindingAid(t *testing.T) {
 
 	template := fmt.Sprintf("fs://%s/fixtures/{repo}/data", cwd)
 
-	reader_uri := fmt.Sprintf("findingaid://?dsn=fixtures/sfomuseum-data-maps.db&template=%s", template)
+	reader_uri := fmt.Sprintf("findingaid://sqlite?dsn=fixtures/sfomuseum-data-maps.db&template=%s", template)
 
 	r, err := reader.NewReader(ctx, reader_uri)
 
