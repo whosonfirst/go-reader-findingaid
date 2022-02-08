@@ -93,9 +93,12 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 
 	default:
 
+		path := u.Path
+		path = strings.TrimLeft(path, "/")
+
 		ru = &url.URL{}
 		ru.Scheme = u.Host
-		ru.Path = u.Path
+		ru.Host = path
 		ru.RawQuery = u.RawQuery
 	}
 
