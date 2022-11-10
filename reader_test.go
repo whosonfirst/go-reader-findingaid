@@ -8,7 +8,9 @@ import (
 	"testing"
 )
 
-func TestFindingAid(t *testing.T) {
+// 
+
+func TestSQLiteFindingAid(t *testing.T) {
 
 	ctx := context.Background()
 
@@ -29,6 +31,29 @@ func TestFindingAid(t *testing.T) {
 	}
 
 	uri := "1746160269"
+
+	fh, err := r.Read(ctx, uri)
+
+	if err != nil {
+		t.Fatalf("Failed to read %s, %v", uri, err)
+	}
+
+	fh.Close()
+}
+
+func TestHTTPFindingAid(t *testing.T) {
+
+	ctx := context.Background()
+
+	reader_uri := "findingaid://https/static.sfomuseum.org/findingaid?template=https://raw.githubusercontent.com/sfomuseum-data/{repo}/main/data/"
+
+	r, err := reader.NewReader(ctx, reader_uri)
+
+	if err != nil {
+		t.Fatalf("Failed to create new reader, %v", err)
+	}
+
+	uri := "102527513"
 
 	fh, err := r.Read(ctx, uri)
 
