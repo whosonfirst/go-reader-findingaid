@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-// 
+//
 
 func TestSQLiteFindingAid(t *testing.T) {
 

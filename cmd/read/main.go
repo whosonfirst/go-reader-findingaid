@@ -1,7 +1,7 @@
 // read is a command-line tool to resolve one or more URIs, using a Who's On First finding aid and read their corresponding Who's On First documents,
 // outputting each to STDOUT. For example:
 //
-// 	$> ./bin/read -reader-uri 'findingaid://awsdynamodb/{TABLE}?partition_key=id&region={REGION}&credentials={CREDENTIALS}' \
+//	$> ./bin/read -reader-uri 'findingaid://awsdynamodb/{TABLE}?partition_key=id&region={REGION}&credentials={CREDENTIALS}' \
 //		-data-template 'https://raw.githubusercontent.com/sfomuseum-data/{repo}/main/data/' \
 //		1762946673 | jq '.properties["wof:name"]'
 //	"flight officer wings: Big Sky Airlines"
