@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/jtacoma/uritemplates v1.0.0
-	github.com/whosonfirst/go-reader v1.0.1
+	github.com/whosonfirst/go-reader v1.0.2
 	github.com/whosonfirst/go-reader-http v0.3.1
 	github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.7.1
 	github.com/whosonfirst/go-whosonfirst-uri v1.2.0
@@ -32,6 +32,8 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/google/wire v0.5.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.4.0 // indirect
+	github.com/hashicorp/errwrap v1.1.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/mattn/go-sqlite3 v1.14.16 // indirect
 	github.com/tidwall/gjson v1.14.3 // indirect
