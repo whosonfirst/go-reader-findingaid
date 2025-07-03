@@ -1,12 +1,14 @@
-module github.com/whosonfirst/go-reader-findingaid
+module github.com/whosonfirst/go-reader-findingaid/v2
 
-go 1.24.0
+go 1.24.2
+
+toolchain go1.24.4
 
 require (
 	github.com/jtacoma/uritemplates v1.0.0
-	github.com/whosonfirst/go-reader v1.0.2
-	github.com/whosonfirst/go-reader-http v0.3.1
-	github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.9.0
+	github.com/whosonfirst/go-reader v1.1.0
+	github.com/whosonfirst/go-reader-http v0.3.2
+	github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.9.2
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
 )
 
@@ -16,7 +18,7 @@ require (
 	github.com/aaronland/go-aws-session v0.2.1 // indirect
 	github.com/aaronland/go-roster v1.0.0 // indirect
 	github.com/aaronland/go-string v1.0.0 // indirect
-	github.com/aaronland/gocloud-docstore v0.0.8 // indirect
+	github.com/aaronland/gocloud-docstore v0.0.9 // indirect
 	github.com/aws/aws-sdk-go v1.55.6 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.36.3 // indirect
 	github.com/aws/aws-sdk-go-v2/config v1.29.12 // indirect

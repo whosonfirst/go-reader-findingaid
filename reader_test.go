@@ -3,9 +3,10 @@ package findingaid
 import (
 	"context"
 	"fmt"
-	"github.com/whosonfirst/go-reader"
 	"os"
 	"testing"
+
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 //
@@ -39,6 +40,16 @@ func TestSQLiteFindingAid(t *testing.T) {
 	}
 
 	fh.Close()
+
+	exists, err := r.Exists(ctx, uri)
+
+	if err != nil {
+		t.Fatalf("Failed to determine if %s exists, %v", uri, err)
+	}
+
+	if !exists {
+		t.Fatalf("Expected %s to exists", uri)
+	}
 }
 
 func TestHTTPFindingAid(t *testing.T) {
@@ -62,4 +73,14 @@ func TestHTTPFindingAid(t *testing.T) {
 	}
 
 	fh.Close()
+
+	exists, err := r.Exists(ctx, uri)
+
+	if err != nil {
+		t.Fatalf("Failed to determine if %s exists, %v", uri, err)
+	}
+
+	if !exists {
+		t.Fatalf("Expected %s to exists", uri)
+	}
 }

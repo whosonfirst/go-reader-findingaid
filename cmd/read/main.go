@@ -11,12 +11,13 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-reader-findingaid"
 	"io"
 	"log"
 	"net/url"
 	"os"
+
+	"github.com/whosonfirst/go-reader-findingaid/v2"
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
