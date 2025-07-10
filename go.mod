@@ -2,12 +2,11 @@ module github.com/whosonfirst/go-reader-findingaid/v2
 
 go 1.24.2
 
-toolchain go1.24.4
+toolchain go1.24.5
 
 require (
 	github.com/jtacoma/uritemplates v1.0.0
-	github.com/whosonfirst/go-reader v1.1.0
-	github.com/whosonfirst/go-reader-http v0.3.2
+	github.com/whosonfirst/go-reader/v2 v2.0.0
 	github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.9.2
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
 )
@@ -51,6 +50,7 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/whosonfirst/go-ioutil v1.0.2 // indirect
+	github.com/whosonfirst/go-reader v1.0.2 // indirect
 	github.com/whosonfirst/go-whosonfirst-sources v0.1.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	gocloud.dev v0.41.0 // indirect

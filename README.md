@@ -22,10 +22,12 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/whosonfirst/go-reader"
-	_ "github.com/whosonfirst/go-reader-findingaid"
 	"io"
 	"os"
+
+	_ "github.com/whosonfirst/go-reader-findingaid/v2"
+	
+	"github.com/whosonfirst/go-reader/v2"
 )
 
 func main() {
