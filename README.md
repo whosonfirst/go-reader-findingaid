@@ -1,12 +1,6 @@
 # go-reader-findingaid
 
-Go package implementing the whosonfirst/go-reader interface for use with Who's On First "finding aids".
-
-## Important
-
-This package targets "version 2" of the `whosonfirst/go-whosonfirst-findingaid` package:
-
-https://github.com/whosonfirst/go-whosonfirst-findingaid/
+Go package implementing the `whosonfirst/go-reader/v2` interface for use with Who's On First "finding aids".
 
 ## Documentation
 
