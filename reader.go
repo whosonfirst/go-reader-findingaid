@@ -1,21 +1,18 @@
 package findingaid
 
 import (
-	_ "github.com/whosonfirst/go-reader-http"
-)
-
-import (
 	"context"
 	"database/sql"
 	"fmt"
-	"github.com/jtacoma/uritemplates"
-	wof_reader "github.com/whosonfirst/go-reader"
-	"github.com/whosonfirst/go-whosonfirst-findingaid/v2/resolver"
-	wof_uri "github.com/whosonfirst/go-whosonfirst-uri"
 	"io"
 	_ "log"
 	"net/url"
 	"strings"
+
+	"github.com/jtacoma/uritemplates"
+	wof_reader "github.com/whosonfirst/go-reader/v2"
+	"github.com/whosonfirst/go-whosonfirst-findingaid/v2/resolver"
+	wof_uri "github.com/whosonfirst/go-whosonfirst-uri"
 )
 
 // WHOSONFIRST_DATA_TEMPLATE is a URL template for the root `data` directory in Who's On First data repositories.
@@ -122,6 +119,17 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 	}
 
 	return r, nil
+}
+
+func (r *FindingAidReader) Exists(ctx context.Context, uri string) (bool, error) {
+
+	new_r, rel_path, err := r.getReaderAndPath(ctx, uri)
+
+	if err != nil {
+		return false, fmt.Errorf("Failed to derive reader and path, %w", err)
+	}
+
+	return new_r.Exists(ctx, rel_path)
 }
 
 // Read returns an `io.ReadSeekCloser` instance for the document resolved by `uri`.
