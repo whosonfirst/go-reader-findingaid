@@ -120,8 +120,8 @@ github.com/whosonfirst/go-ioutil v1.0.2 h1:+GJPfa42OFn5A+5yJSc5jQTQIkNV3/MhYyg4p
 github.com/whosonfirst/go-ioutil v1.0.2/go.mod h1:2dS1vWdAIkiHDvDF8fYyjv6k2NISmwaIjJJeEDBEdvg=
 github.com/whosonfirst/go-reader/v2 v2.0.0 h1:BP6aUQ1HAMCZcp27Lh5XDwzlPXV1quwBF1fajRg0ddo=
 github.com/whosonfirst/go-reader/v2 v2.0.0/go.mod h1:u1q/ZH2EeYDioLYx7544lyVl6WXbal4JRyvk2qpIYsk=
-github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.9.3 h1:vTNt9ybI65Dp/8ucPlWF6BjArZVF9ja9OGGMh2ViEEk=
-github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.9.3/go.mod h1:Afqy/LMuvoMNN9l/OiXIPmqzUElWJ3hOKBpOBo5jOIw=
+github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.11.0 h1:e+FO6kXz9ZjdkM/VusZhdkdEPNBUstXSYj/RhMHf8SI=
+github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.11.0/go.mod h1:Afqy/LMuvoMNN9l/OiXIPmqzUElWJ3hOKBpOBo5jOIw=
 github.com/whosonfirst/go-whosonfirst-sources v0.1.0 h1:JuKLa6KWke22jBfJ1pM9WQHoz1/3pbDv2C+aR+THPPQ=
 github.com/whosonfirst/go-whosonfirst-sources v0.1.0/go.mod h1:EUMHyGzUmqPPxlMmOp+28BFeoBdxxE0HCKRd67lkqGM=
 github.com/whosonfirst/go-whosonfirst-uri v1.3.0 h1:LYOVLqP9rWQxauYVkdw65j5LZxEi8OK0GHh/qCEpX4g=
