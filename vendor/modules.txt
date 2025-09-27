@@ -237,7 +237,7 @@ github.com/whosonfirst/go-ioutil
 # github.com/whosonfirst/go-reader/v2 v2.0.0
 ## explicit; go 1.22
 github.com/whosonfirst/go-reader/v2
-# github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.9.3
+# github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.11.0
 ## explicit; go 1.25.0
 github.com/whosonfirst/go-whosonfirst-findingaid/v2/resolver
 # github.com/whosonfirst/go-whosonfirst-sources v0.1.0

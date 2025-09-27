@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	github.com/jtacoma/uritemplates v1.0.0
 	github.com/whosonfirst/go-reader/v2 v2.0.0
-	github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.9.3
+	github.com/whosonfirst/go-whosonfirst-findingaid/v2 v2.11.0
 	github.com/whosonfirst/go-whosonfirst-uri v1.3.0
 )
 
