@@ -17,6 +17,7 @@ import (
 // WHOSONFIRST_DATA_TEMPLATE is a URL template for the root `data` directory in Who's On First data repositories.
 const WHOSONFIRST_DATA_TEMPLATE string = "https://raw.githubusercontent.com/whosonfirst-data/{repo}/master/data/"
 
+// findingaid is a struct defining a resolver.Resolver and *uritemplates.UriTemplate pair
 type findingaid struct {
 	// A resolver.Resolver instance used to derive the Who's On First repository name for an ID.
 	resolver resolver.Resolver
@@ -27,7 +28,6 @@ type findingaid struct {
 // type FindingAidReader implements the `whosonfirst/go-reader` interface for use with Who's On First finding aids.
 type FindingAidReader struct {
 	wof_reader.Reader
-	// ...
 	findingaids []*findingaid
 }
 
@@ -51,85 +51,49 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 	findingaids := make([]*findingaid, 0)
 
 	switch u.Host {
-	case "foo":
-	default:
+	case "multi":
 
-		uri_template := WHOSONFIRST_DATA_TEMPLATE
+		for _, rt_uri := range q["resolver"] {
 
-		if q.Get("template") != "" {
-			uri_template = q.Get("template")
-		}
+			rt_u, err := url.Parse(rt_uri)
 
-		uri_template, err = url.QueryUnescape(uri_template)
-
-		if err != nil {
-			return nil, fmt.Errorf("Failed to unescape ?template= parameter, %w", err)
-		}
-
-		t, err := uritemplates.Parse(uri_template)
-
-		if err != nil {
-			return nil, fmt.Errorf("Failed to parse URI template, %w", err)
-		}
-
-		q.Del("template")
-		u.RawQuery = q.Encode()
-
-		// findingaid://sqlite?dsn={DSN}
-		// findingaid://awsdynamo/{TABLENAME}
-		// findingaid://http(s)/{HOST}/{PATH}
-
-		// Set up resolver
-
-		var ru *url.URL
-
-		switch u.Host {
-		case "http", "https":
-
-			path := u.Path
-			path = strings.TrimLeft(path, "/")
-
-			parts := strings.Split(path, "/")
-
-			ru = &url.URL{}
-			ru.Scheme = u.Host
-			ru.Host = parts[0]
-
-			if len(parts) > 1 {
-				path = strings.Join(parts[1:], "/")
-				ru.Path = fmt.Sprintf("/%s", path)
+			if err != nil {
+				return nil, fmt.Errorf("Failed to parse resolver URI, %w", err)
 			}
 
-			ru.RawQuery = u.RawQuery
+			fa_u := url.URL{}
+			fa_u.Scheme = "findingaid"
+			fa_u.Host = rt_u.Scheme
+			fa_u.Path = rt_u.Host + rt_u.Path
+			fa_u.RawQuery = rt_u.RawQuery
 
-		case "multi":
+			fa_uri := fa_u.String()
 
-			ru = &url.URL{}
-			ru.Scheme = u.Host
-			ru.RawQuery = u.RawQuery
+			r, t, err := deriveResolverAndTemplate(ctx, fa_uri)
 
-		default:
+			if err != nil {
+				return nil, fmt.Errorf("Failed to derive resolver and template from ?resolver= URI, %w", err)
+			}
 
-			path := u.Path
-			path = strings.TrimLeft(path, "/")
+			fa := &findingaid{
+				resolver: r,
+				template: t,
+			}
 
-			ru = &url.URL{}
-			ru.Scheme = u.Host
-			ru.Host = path
-			ru.RawQuery = u.RawQuery
+			findingaids = append(findingaids, fa)
 		}
 
-		r_uri := ru.String()
+	default:
 
-		f, err := resolver.NewResolver(ctx, r_uri)
+		r, t, err := deriveResolverAndTemplate(ctx, uri)
 
 		if err != nil {
-			return nil, fmt.Errorf("Failed to create resolver, %w", err)
+			return nil, err
 		}
 
 		findingaids = []*findingaid{
 			&findingaid{
-				resolver: f,
+				resolver: r,
 				template: t,
 			},
 		}
@@ -199,10 +163,10 @@ func (r *FindingAidReader) getReaderAndPath(ctx context.Context, uri string) (wo
 // to use for reading documents resolved by `uri`.
 func (r *FindingAidReader) getReaderURIAndPath(ctx context.Context, uri string) (string, string, error) {
 
+	// TBD: cache this?
+
 	logger := slog.Default()
 	logger = logger.With("uri", uri)
-
-	// TBD: cache this?
 
 	id, uri_args, err := wof_uri.ParseURI(uri)
 
@@ -244,9 +208,89 @@ func (r *FindingAidReader) getReaderURIAndPath(ctx context.Context, uri string) 
 			return "", "", fmt.Errorf("Failed to derive reader URI, %w", err)
 		}
 
-		logger.Debug("Return reader URI for resolver", "index", idx)
+		logger.Debug("Return reader URI for resolver", "reader_uri", reader_uri, "rel_path", rel_path)
 		return reader_uri, rel_path, nil
 	}
 
 	return "", "", fmt.Errorf("Failed to derive repo, no findingaid matches")
+}
+
+func deriveResolverAndTemplate(ctx context.Context, uri string) (resolver.Resolver, *uritemplates.UriTemplate, error) {
+
+	u, err := url.Parse(uri)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	q := u.Query()
+
+	uri_template := WHOSONFIRST_DATA_TEMPLATE
+
+	if q.Get("template") != "" {
+		uri_template = q.Get("template")
+	}
+
+	uri_template, err = url.QueryUnescape(uri_template)
+
+	if err != nil {
+		return nil, nil, fmt.Errorf("Failed to unescape ?template= parameter, %w", err)
+	}
+
+	t, err := uritemplates.Parse(uri_template)
+
+	if err != nil {
+		return nil, nil, fmt.Errorf("Failed to parse URI template, %w", err)
+	}
+
+	q.Del("template")
+	u.RawQuery = q.Encode()
+
+	// findingaid://sqlite?dsn={DSN}
+	// findingaid://awsdynamo/{TABLENAME}
+	// findingaid://http(s)/{HOST}/{PATH}
+
+	// Set up resolver
+
+	var ru *url.URL
+
+	switch u.Host {
+	case "http", "https":
+
+		path := u.Path
+		path = strings.TrimLeft(path, "/")
+
+		parts := strings.Split(path, "/")
+
+		ru = &url.URL{}
+		ru.Scheme = u.Host
+		ru.Host = parts[0]
+
+		if len(parts) > 1 {
+			path = strings.Join(parts[1:], "/")
+			ru.Path = fmt.Sprintf("/%s", path)
+		}
+
+		ru.RawQuery = u.RawQuery
+
+	default:
+
+		path := u.Path
+		path = strings.TrimLeft(path, "/")
+
+		ru = &url.URL{}
+		ru.Scheme = u.Host
+		ru.Host = path
+		ru.RawQuery = u.RawQuery
+	}
+
+	r_uri := ru.String()
+
+	r, err := resolver.NewResolver(ctx, r_uri)
+
+	if err != nil {
+		return nil, nil, fmt.Errorf("Failed to create resolver, %w", err)
+	}
+
+	return r, t, nil
 }
