@@ -50,6 +50,9 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 
 	findingaids := make([]*findingaid, 0)
 
+	logger := slog.Default()
+	logger = logger.With("scheme", u.Host)
+	
 	switch u.Host {
 	case "multi":
 
@@ -80,6 +83,7 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 				template: t,
 			}
 
+			logger.Debug("Add findingaid reader", "uri", fa_uri)
 			findingaids = append(findingaids, fa)
 		}
 
@@ -91,6 +95,8 @@ func NewFindingAidReader(ctx context.Context, uri string) (wof_reader.Reader, er
 			return nil, err
 		}
 
+		logger.Debug("Add findingaid reader", "uri", uri)
+		
 		findingaids = []*findingaid{
 			&findingaid{
 				resolver: r,
@@ -184,16 +190,17 @@ func (r *FindingAidReader) getReaderURIAndPath(ctx context.Context, uri string) 
 
 	for idx, fa := range r.findingaids {
 
+		logger.Debug("Get repo", "findingaid", idx, "id", id)
 		repo, err := fa.resolver.GetRepo(ctx, id)
 
 		if err != nil {
 
 			if err == resolver.ErrNotFound {
-				logger.Debug("Failed to derive repo with resolver", "index", idx, "error", err)
+				logger.Debug("Failed to derive repo with resolver, not found", "id", id)
 				continue
 			}
 
-			logger.Error("Failed to derive repo with resolver", "index", idx, "error", err)
+			logger.Error("Failed to derive repo with resolver", "id", id, "error", err)
 			return "", "", fmt.Errorf("Failed to derive repo, %w", err)
 		}
 
@@ -204,7 +211,7 @@ func (r *FindingAidReader) getReaderURIAndPath(ctx context.Context, uri string) 
 		reader_uri, err := fa.template.Expand(values)
 
 		if err != nil {
-			logger.Error("Failed to expand template for resolver", "index", idx, "template", fa.template, "error", err)
+			logger.Error("Failed to expand template for resolver", "repo", repo, "template", fa.template, "error", err)
 			return "", "", fmt.Errorf("Failed to derive reader URI, %w", err)
 		}
 
